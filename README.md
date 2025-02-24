@@ -1,13 +1,147 @@
 # CSPR Plant Monitoring System Using Raspberry Pis and NEMA 17 Motors
-These codes run on RealSense D345i
-There are two different types of code, client code and server code. The client codes are run on raspberry pi and the server code are run on the compute. Since the system requires connection and communication between the clients and the server, it is necessary for all the devices to connect to a same network. For some scripts that requires communication, the user should change the server url into the user's url. The url is shown once the server.py is launched.
-For the server computer, server.py should be run first. No additional actions are required after the script is run. It is the base of the network's communication and it is vital to keep it running at the backend.
-Next, run anchor_identify.py. This script is used to identify the coordinates of the anchors/motors. To use this script, left click the motor of Pi4, Pi3, Pi2 and Pi1 sequencially. The script uses global registration, so rotation of the camera is allowed. However, to acheive better accuracy, the rotation better be kept minimal or best no rotation.
-After identifying all four anchors, anchor_identify.py will automatically shut down. You can observe the coordinates on the server url webpage. Then robot_identify.py should be run. There are currently two versions of this scirpt. robot_identify.py is used to identify colour, in our case, yellow, while robot_identify_infrared.py is used to identify infrared light. There is no logic difference between the two scripts, so just run the script accordingly with the user's object mark. After running the script, the user needs to click on the item that should be tracked. In our case, it is the center of the robot platform. After clicking, the script will keep running and updating the 'robot coordinate' on the website.
-With server.py and robot_identify.py running at the backend, the system has finished initialization. Next thing is to run the client end scripts. /// leave blank edit later
 
-After the client end scripts are run, the user can choose to mannually enter the target coordinate via the server url website or run the 50_steps_fixed.py script to move the robot around 50 times. The record of the movements are kept in movement_records.json. 
-With the movement_records.json, the user can start rnning fine_tune_model.py. It is a script that is designed to move the robot and finetune the robot to take pictures of the plants. The target coordinates in this script should be kept the same with 50_steps_fixed.py since the model performs better with similar data. Both calc.py and findGreen.py are imported to help the scripts.
-After this, the user can use evaluation.py to observe the performance of the system.
+These codes run on RealSense D345i. There are two different types of code: **client code** (run on Raspberry Pis) and **server code** (run on the computer). Since the system requires communication between the clients and the server, all devices need to be connected to the same network.
 
-model_compute_BFS.py, model_demonstration.py and plot_the_model.py are used to simulate the system with reliable physical model. model_demonstration.py is a 3D model graph where the user can adjust X,Y and Z axis. model_compute_BFS.py is a script that computes every dot's imformation in the required range. It includes the robot's posture, the cables' tension at the position of the dot. After the computation, the result is saved in platform_workspace_data.csv, while plot_the_model.py is used to make plots with this data file.
+## Table of Contents
+
+- [Folder Structure](#folder-structure)
+- [Prerequisites](#prerequisites)
+- [Usage](#usage)
+  - [1. Run the Server](#1-run-the-server)
+  - [2. Anchor Identification](#2-anchor-identification)
+  - [3. Robot Identification](#3-robot-identification)
+  - [4. Run Client Scripts](#4-run-client-scripts)
+  - [5. Next Steps (Movement and Fine-Tuning)](#5-next-steps-movement-and-fine-tuning)
+- [Model Simulation Scripts](#model-simulation-scripts)
+- [RealSensePointCloudVisualizer (Optional)](#realsensepointcloudvisualizer-optional)
+- [License](#license)
+- [Conclusion](#conclusion)
+
+---
+
+## Folder Structure
+project_wrapped/ ├── client_end/ │ ├── pi1-4.py │ ├── pi5_camera.py │ └── pi5_6050.py ├── server_end/ │ ├── 50_steps_fixed.py │ ├── anchor_identify.py │ ├── calc.py │ ├── evaluation.py │ ├── findGreen.py │ ├── findPlant.py │ ├── fine_tune_model.py │ ├── model_compute_BFS.py │ ├── model_demonstration.py │ ├── movement_records.json │ ├── platform_workspace_data_3m_3m.csv │ ├── platform_workspace_data_more.csv │ ├── plot_the_model.py │ ├── robot_identify.py │ ├── robot_identify_infrared.py │ ├── server.py │ └── RealSensePointCloudVisualizer/ └── README.md
+
+> Note: `.idea/` is your IDE config folder and generally not critical for the project itself.
+
+---
+
+## Prerequisites
+
+1. **Python 3.x** installed on both the Raspberry Pis and the server computer.
+2. **Intel RealSense D345i** camera and corresponding SDK/libraries (if you are using scripts that rely on RealSense).
+3. All devices (Raspberry Pis + Server) must be connected to the **same network**.
+
+---
+
+## Usage
+
+Below is the basic workflow of the system:
+
+### 1. Run the Server
+
+1. On your server (PC or a more powerful machine), first run  
+   [`server.py`](https://github.com/YellowSubmarine1999/cspr/blob/main/server_end/server.py).  
+   It will print out a URL (e.g., `http://<your_server_ip>:5000`) — this is the endpoint for network communication.
+2. Keep `server.py` **running in the background** to maintain the connection.
+
+---
+
+### 2. Anchor Identification
+
+1. Run  
+   [`anchor_identify.py`](https://github.com/YellowSubmarine1999/cspr/blob/main/server_end/anchor_identify.py)  
+   on the server.  
+2. In the 3D visualization window, **click** on the motors of Pi4, Pi3, Pi2, and Pi1 **in this exact sequence** (4 → 3 → 2 → 1).  
+   - The script uses global registration, so camera rotation is allowed. However, keep rotation minimal for better accuracy.  
+3. After identifying all four anchors, `anchor_identify.py` will automatically shut down.  
+4. You can see the anchors’ coordinates on the server URL.
+
+---
+
+### 3. Robot Identification
+
+1. There are **two** versions of robot identification:
+   - [`robot_identify.py`](https://github.com/YellowSubmarine1999/cspr/blob/main/server_end/robot_identify.py): identifies **yellow** markers.
+   - [`robot_identify_infrared.py`](https://github.com/YellowSubmarine1999/cspr/blob/main/server_end/robot_identify_infrared.py): identifies **infrared** light.
+2. Run the appropriate script, then **click** on the item you want to track (e.g., the robot’s center).
+3. The script keeps running and updates the “robot coordinate” on the server URL webpage in real-time.
+
+With `server.py` and `robot_identify*.py` running, the system is initialized.
+
+---
+
+### 4. Run Client Scripts
+
+On each **Raspberry Pi**, you have different scripts in the `client_end` folder:
+
+1. [`pi1-4.py`](https://github.com/YellowSubmarine1999/cspr/blob/main/client_end/pi1-4.py)  
+   - Controls **four motors**.  
+   - Make sure the Pi’s name or motor order **matches** the anchor order from earlier (4 → 3 → 2 → 1).
+2. [`pi5_camera.py`](https://github.com/YellowSubmarine1999/cspr/blob/main/client_end/pi5_camera.py)  
+   - Automatically takes pictures when the robot stops moving.  
+   - The pictures are uploaded to the `uploads` folder on the server.
+3. [`pi5_6050.py`](https://github.com/YellowSubmarine1999/cspr/blob/main/client_end/pi5_6050.py)  
+   - A **balance sensor** script that uploads the pitch & roll of the robot.  
+   - If the user wants to adjust the robot’s posture, they can use `send_adjustments` inside this script.
+
+---
+
+### 5. Next Steps (Movement and Fine-Tuning)
+
+1. **Manual Movement**: Manually enter target coordinates via the server URL.
+2. **Automatic Movement**: Run  
+   [`50_steps_fixed.py`](https://github.com/YellowSubmarine1999/cspr/blob/main/server_end/50_steps_fixed.py)  
+   on the server to move the robot **50 times**.  
+   - The record of these movements is saved in [`movement_records.json`](https://github.com/YellowSubmarine1999/cspr/blob/main/server_end/movement_records.json).
+3. **Fine-Tuning**: Use  
+   [`fine_tune_model.py`](https://github.com/YellowSubmarine1999/cspr/blob/main/server_end/fine_tune_model.py)  
+   (which also relies on [`calc.py`](https://github.com/YellowSubmarine1999/cspr/blob/main/server_end/calc.py) and [`findGreen.py`](https://github.com/YellowSubmarine1999/cspr/blob/main/server_end/findGreen.py))  
+   to further optimize the robot’s movement and data collection.
+4. **Evaluation**: Run  
+   [`evaluation.py`](https://github.com/YellowSubmarine1999/cspr/blob/main/server_end/evaluation.py)  
+   to observe the system’s performance metrics.
+
+---
+
+## Model Simulation Scripts
+
+1. [`model_compute_BFS.py`](https://github.com/YellowSubmarine1999/cspr/blob/main/server_end/model_compute_BFS.py)  
+   - Computes information (robot posture, cable tension, etc.) across a 3D workspace.  
+   - Saves results in CSV files such as  
+     [`platform_workspace_data_3m_3m.csv`](https://github.com/YellowSubmarine1999/cspr/blob/main/server_end/platform_workspace_data_3m_3m.csv)  
+     and  
+     [`platform_workspace_data_more.csv`](https://github.com/YellowSubmarine1999/cspr/blob/main/server_end/platform_workspace_data_more.csv).
+2. [`model_demonstration.py`](https://github.com/YellowSubmarine1999/cspr/blob/main/server_end/model_demonstration.py)  
+   - A 3D model graph where the user can adjust X, Y, and Z to visualize the system.
+3. [`plot_the_model.py`](https://github.com/YellowSubmarine1999/cspr/blob/main/server_end/plot_the_model.py)  
+   - Plots data from the `platform_workspace_data_*.csv` files to analyze the feasible workspace and tension data.
+
+---
+
+## RealSensePointCloudVisualizer (Optional)
+
+Within the `server_end/RealSensePointCloudVisualizer/` folder, there is a small project for visualizing RealSense point clouds:
+
+- [`rs_pcd_visualizer.py`](https://github.com/YellowSubmarine1999/cspr/blob/main/server_end/RealSensePointCloudVisualizer/rs_pcd_visualizer.py)  
+- `Pipfile` / `Pipfile.lock` for environment management  
+- `.editorconfig`, `.gitignore`, `LICENSE`
+
+Refer to its own  
+[`README.md`](https://github.com/YellowSubmarine1999/cspr/blob/main/server_end/RealSensePointCloudVisualizer/README.md)  
+for additional details if you need advanced point cloud visualization.
+
+---
+
+## License
+
+(Include your chosen license here, e.g., MIT, Apache 2.0, GPL, or remove this section if not applicable.)
+
+---
+
+## Conclusion
+
+- **Server**: Run `server.py`, then run `anchor_identify.py` and `robot_identify*.py` to initialize.
+- **Client (Raspberry Pis)**: Run `pi1-4.py`, `pi5_camera.py`, and `pi5_6050.py`.
+- Move the robot manually or with `50_steps_fixed.py`, then collect data and fine-tune with `fine_tune_model.py`.
+- Evaluate with `evaluation.py` or explore 3D simulations with `model_*` scripts.
