@@ -111,29 +111,10 @@ On each **Raspberry Pi**, you have different scripts in the `client_end` folder:
 
 ---
 
-## RealSensePointCloudVisualizer (Optional)
-
-Within the `server_end/RealSensePointCloudVisualizer/` folder, there is a small project for visualizing RealSense point clouds:
-
-- [`rs_pcd_visualizer.py`](https://github.com/YellowSubmarine1999/cspr/blob/main/server_end/RealSensePointCloudVisualizer/rs_pcd_visualizer.py)  
-- `Pipfile` / `Pipfile.lock` for environment management  
-- `.editorconfig`, `.gitignore`, `LICENSE`
-
-Refer to its own  
-[`README.md`](https://github.com/YellowSubmarine1999/cspr/blob/main/server_end/RealSensePointCloudVisualizer/README.md)  
-for additional details if you need advanced point cloud visualization.
-
----
-
-## License
-
-(Include your chosen license here, e.g., MIT, Apache 2.0, GPL, or remove this section if not applicable.)
-
----
 
 ## Conclusion
 
 - **Server**: Run `server.py`, then run `anchor_identify.py` and `robot_identify*.py` to initialize.
 - **Client (Raspberry Pis)**: Run `pi1-4.py`, `pi5_camera.py`, and `pi5_6050.py`.
-- Move the robot manually or with `50_steps_fixed.py`, then collect data and fine-tune with `fine_tune_model.py`.
+- Move the robot manually or with `50_steps_fixed.py`, then collect data and used fine-tune model with `fine_tune_model.py`.
 - Evaluate with `evaluation.py` or explore 3D simulations with `model_*` scripts.
