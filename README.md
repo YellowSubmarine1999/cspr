@@ -1,6 +1,6 @@
 # CSPR Plant Monitoring System Using Raspberry Pis and NEMA 17 Motors
 
-These codes run on RealSense D345i. There are two different types of code: **client code** (run on Raspberry Pis) and **server code** (run on the computer). Since the system requires communication between the clients and the server, all devices need to be connected to the same network.
+These codes run on RealSense D435i. There are two different types of code: **client code** (run on Raspberry Pis) and **server code** (run on the computer). Since the system requires communication between the clients and the server, all devices need to be connected to the same network.
 
 ## Table of Contents
 
@@ -13,15 +13,13 @@ These codes run on RealSense D345i. There are two different types of code: **cli
   - [4. Run Client Scripts](#4-run-client-scripts)
   - [5. Next Steps (Movement and Fine-Tuning)](#5-next-steps-movement-and-fine-tuning)
 - [Model Simulation Scripts](#model-simulation-scripts)
-- [RealSensePointCloudVisualizer (Optional)](#realsensepointcloudvisualizer-optional)
-- [License](#license)
 - [Conclusion](#conclusion)
 
 ---
 ## Prerequisites
 
 1. **Python 3.x** installed on both the Raspberry Pis and the server computer.
-2. **Intel RealSense D345i** camera and corresponding SDK/libraries (if you are using scripts that rely on RealSense).
+2. **Intel RealSense D435i** camera and corresponding SDK/libraries (if you are using scripts that rely on RealSense).
 3. All devices (Raspberry Pis + Server) must be connected to the **same network**.
 
 ---
