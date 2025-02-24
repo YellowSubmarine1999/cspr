@@ -18,14 +18,6 @@ These codes run on RealSense D345i. There are two different types of code: **cli
 - [Conclusion](#conclusion)
 
 ---
-
-## Folder Structure
-project_wrapped/ ├── client_end/ │ ├── pi1-4.py │ ├── pi5_camera.py │ └── pi5_6050.py ├── server_end/ │ ├── 50_steps_fixed.py │ ├── anchor_identify.py │ ├── calc.py │ ├── evaluation.py │ ├── findGreen.py │ ├── findPlant.py │ ├── fine_tune_model.py │ ├── model_compute_BFS.py │ ├── model_demonstration.py │ ├── movement_records.json │ ├── platform_workspace_data_3m_3m.csv │ ├── platform_workspace_data_more.csv │ ├── plot_the_model.py │ ├── robot_identify.py │ ├── robot_identify_infrared.py │ ├── server.py │ └── RealSensePointCloudVisualizer/ └── README.md
-
-> Note: `.idea/` is your IDE config folder and generally not critical for the project itself.
-
----
-
 ## Prerequisites
 
 1. **Python 3.x** installed on both the Raspberry Pis and the server computer.
