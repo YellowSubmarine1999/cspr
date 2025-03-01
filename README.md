@@ -116,3 +116,8 @@ On each **Raspberry Pi**, you have different scripts in the `client_end` folder:
 - **Client (Raspberry Pis)**: Run `pi1-4.py`, `pi5_camera.py`, and `pi5_6050.py`.
 - Move the robot manually or with `50_steps_fixed.py`, then collect data and used fine-tune model with `fine_tune_model.py`.
 - Evaluate with `evaluation.py` or explore 3D simulations with `model_*` scripts.
+
+##Pi Wire Connect
+Connect with 6050   ![image](https://github.com/user-attachments/assets/2e3a8322-14ab-4152-88df-aa90d887cd24)
+Connect with NEMA 17 driver ![image](https://github.com/user-attachments/assets/33acc667-5320-481c-b710-b78364b14abe)
+
